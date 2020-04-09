@@ -10,16 +10,21 @@
 #include "printf.h"
 #include "gpio.h"
 #include "usbd_cdc_if.h"
+#include "dashboard.h"
+#include "usart.h"
+
 
 void StartShowTelemetryDataTask(void const * argument) {
+	SteeringDashMessageStc msg = {0};
+
 	printf("StartShowTelemetryDataTask started.\r\n");
-	char msg[] = "Serial Test\r\n";
 	/* Infinite loop */
 	for(;;)
 	{
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-		printf("Serial Test\r\n");
-		CDC_Transmit_FS(msg, sizeof(msg));
-		osDelay(1000);
+		if (HandleSteeringDashData() == pdPASS) {
+			//HAL_UART_Transmit(&huart2, (uint8_t*) &steeringDashboard.rxBuffer[msg.index], msg.len, 100);
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+		}
+		// CDC_Transmit_FS(msg, sizeof(msg));
 	}
 }

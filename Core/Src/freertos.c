@@ -128,12 +128,14 @@ void StartHIDControllerTask(void const * argument)
   int startVals[5] = {60, 44, 55, 70, 34};
   for(;;)
   {
+	  /*
 	  SetRpmPercentage(i);
 	  i++;
 	  if (i >= 100)
 	  {
 		  i = startVals[sVali++ % 5];
 	  }
+	  */
 	  osDelay(20);
   }
   /* USER CODE END StartHIDControllerTask */

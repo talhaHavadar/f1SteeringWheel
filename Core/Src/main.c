@@ -54,6 +54,7 @@
 #include "usb_device.h"
 #include "gpio.h"
 #include "ws2812.h"
+#include "dashboard.h"
 
 
 /* USER CODE BEGIN Includes */
@@ -114,6 +115,7 @@ int main(void)
 
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
+  InitializeSteeringDashboard();
 
   /* Start scheduler */
   osKernelStart();
