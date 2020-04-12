@@ -68,8 +68,8 @@ osThreadId ShowTeleDataHandle;
 /* Function prototypes -------------------------------------------------------*/
 void StartHIDControllerTask(void const * argument);
 extern void StartShowTelemetryDataTask(void const * argument);
-
 extern void MX_USB_DEVICE_Init(void);
+
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
@@ -114,18 +114,13 @@ void MX_FREERTOS_Init(void) {
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 }
-extern void SetRpmPercentage(uint8_t percentage);
 
 /* StartHIDControllerTask function */
 void StartHIDControllerTask(void const * argument)
 {
-  /* init code for USB_DEVICE */
-  MX_USB_DEVICE_Init();
-  /* USER CODE BEGIN StartHIDControllerTask */
+	/* init code for USB_DEVICE */
+	MX_USB_DEVICE_Init();
   /* Infinite loop */
-  int i = 0;
-  int sVali = 0;
-  int startVals[5] = {60, 44, 55, 70, 34};
   for(;;)
   {
 	  /*

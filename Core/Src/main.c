@@ -111,6 +111,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+
   Ws2812Init();
 
   /* Call init function for freertos objects (in freertos.c) */

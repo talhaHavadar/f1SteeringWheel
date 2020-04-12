@@ -91,14 +91,14 @@
   * @{
   */
 
-#define USBD_VID     1155
-#define USBD_LANGID_STRING     1033
-#define USBD_MANUFACTURER_STRING     "Raibotics Inc."
-#define USBD_PID_FS     22336
-#define USBD_PRODUCT_STRING_FS     "STM32 Virtual ComPort"
-#define USBD_SERIALNUMBER_STRING_FS     "00000000001A"
-#define USBD_CONFIGURATION_STRING_FS     "CDC Config"
-#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+#define USBD_VID     					1155
+#define USBD_LANGID_STRING     			1033
+#define USBD_MANUFACTURER_STRING     	"Raibotics Inc."
+#define USBD_PID_FS     				0x5741
+#define USBD_PRODUCT_STRING_FS     		"F1 Steering Wheel"
+#define USBD_SERIALNUMBER_STRING_FS     "00000000001B"
+#define USBD_CONFIGURATION_STRING_FS    "F1 Steering Wheel Config"
+#define USBD_INTERFACE_STRING_FS     	"F1 Steering Wheel Interface"
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -172,9 +172,9 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
   0x00,                       /*bcdUSB */
   0x02,
-  0x02,                       /*bDeviceClass*/
+  0xEF,                       /*bDeviceClass*/
   0x02,                       /*bDeviceSubClass*/
-  0x00,                       /*bDeviceProtocol*/
+  0x01,                       /*bDeviceProtocol*/
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
   HIBYTE(USBD_VID),           /*idVendor*/
