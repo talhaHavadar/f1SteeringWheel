@@ -95,7 +95,7 @@
 #define USBD_LANGID_STRING     			1033
 #define USBD_MANUFACTURER_STRING     	"Raibotics Inc."
 #define USBD_PID_FS     				0x5741
-#define USBD_PRODUCT_STRING_FS     		"F1 Steering Wheel"
+#define USBD_PRODUCT_STRING_FS     		"ScorpTech Inc. F1 Steering Wheel"
 #define USBD_SERIALNUMBER_STRING_FS     "00000000001B"
 #define USBD_CONFIGURATION_STRING_FS    "F1 Steering Wheel Config"
 #define USBD_INTERFACE_STRING_FS     	"F1 Steering Wheel Interface"

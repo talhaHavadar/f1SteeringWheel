@@ -308,6 +308,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , USBD_CDC_IN_EP, PCD_SNG_BUF, 0xE0);
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , USBD_CDC_OUT_EP, PCD_SNG_BUF, 0x100);
   HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , USBD_HID_IN_EP, PCD_SNG_BUF, 0x140);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , USBD_HID_OUT_EP, PCD_SNG_BUF, 0x180);
   return USBD_OK;
 }
 

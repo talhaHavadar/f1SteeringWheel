@@ -52,6 +52,7 @@
 #include "cmsis_os.h"
 #include "usb_device.h"
 #include "printf.h"
+#include "hid_reports.h"
 
 /* USER CODE BEGIN Includes */     
 
@@ -68,7 +69,6 @@ osThreadId ShowTeleDataHandle;
 /* Function prototypes -------------------------------------------------------*/
 void StartHIDControllerTask(void const * argument);
 extern void StartShowTelemetryDataTask(void const * argument);
-extern void MX_USB_DEVICE_Init(void);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -115,11 +115,15 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 }
 
+//extern uint8_t USBD_HID_SendReport(USBD_HandleTypeDef  *pdev, uint8_t *report, uint16_t len);
+
 /* StartHIDControllerTask function */
 void StartHIDControllerTask(void const * argument)
 {
 	/* init code for USB_DEVICE */
 	MX_USB_DEVICE_Init();
+	HIDGamepadReportTypeDef gamepad_report = emptyHIDGamepadReport;
+	// gamepad_report.buttons = 0x1;
   /* Infinite loop */
   for(;;)
   {
@@ -131,7 +135,29 @@ void StartHIDControllerTask(void const * argument)
 		  i = startVals[sVali++ % 5];
 	  }
 	  */
-	  osDelay(20);
+//	  struct mouse_report_ {
+//	  	uint8_t packet_id;
+//	  	uint8_t left_button:1;
+//	  	uint8_t middle_button:1;
+//	  	uint8_t right_button:1;
+//	  	uint8_t additional_buttons:5;
+//	  	int8_t X_pos;
+//	  	int8_t Y_pos;
+//	  	int8_t mouse_wheel_pos;
+//	  };
+//	  volatile struct mouse_report_ mouse_report = {
+//	  		.packet_id = 6,
+//	  		.left_button = 0,
+//	  		.right_button = 0,
+//	  		.middle_button = 0,
+//	  		.additional_buttons = 0,
+//	  		.X_pos = 10,
+//	  		.Y_pos = 0,
+//	  		.mouse_wheel_pos = 0,
+//	  };
+//
+	  // USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*) &gamepad_report, sizeof(gamepad_report));
+	  osDelay(10);
   }
   /* USER CODE END StartHIDControllerTask */
 }

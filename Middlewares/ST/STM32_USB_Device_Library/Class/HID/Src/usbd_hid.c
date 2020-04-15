@@ -106,75 +106,25 @@ USBD_ClassTypeDef  USBD_HID =
   NULL, /*SOF */
   NULL,
   NULL,      
-  USBD_HID_GetCfgDesc,
-  USBD_HID_GetCfgDesc,
-  USBD_HID_GetCfgDesc,
+  NULL,
+  NULL,
+  NULL,
   USBD_HID_GetDeviceQualifierDesc,
 };
-
-/* USB HID device Configuration Descriptor */
-__ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIGN_END =
-{
-  0x09, /* bLength: Configuration Descriptor size */
-  USB_DESC_TYPE_CONFIGURATION, /* bDescriptorType: Configuration */
-  USB_HID_CONFIG_DESC_SIZ,
-  /* wTotalLength: Bytes returned */
-  0x00,
-  0x01,         /*bNumInterfaces: 1 interface*/
-  0x01,         /*bConfigurationValue: Configuration value*/
-  0x00,         /*iConfiguration: Index of string descriptor describing
-  the configuration*/
-  0xE0,         /*bmAttributes: bus powered and Support Remote Wake-up */
-  0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
-  
-  /************** Descriptor of Joystick Mouse interface ****************/
-  /* 09 */
-  0x09,         /*bLength: Interface Descriptor size*/
-  USB_DESC_TYPE_INTERFACE,/*bDescriptorType: Interface descriptor type*/
-  0x00,         /*bInterfaceNumber: Number of Interface*/
-  0x00,         /*bAlternateSetting: Alternate setting*/
-  0x01,         /*bNumEndpoints*/
-  0x03,         /*bInterfaceClass: HID*/
-  0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
-  0,            /*iInterface: Index of string descriptor*/
-  /******************** Descriptor of Joystick Mouse HID ********************/
-  /* 18 */
-  0x09,         /*bLength: HID Descriptor size*/
-  HID_DESCRIPTOR_TYPE, /*bDescriptorType: HID*/
-  0x11,         /*bcdHID: HID Class Spec release number*/
-  0x01,
-  0x00,         /*bCountryCode: Hardware target country*/
-  0x01,         /*bNumDescriptors: Number of HID class descriptors to follow*/
-  0x22,         /*bDescriptorType*/
-  HID_MOUSE_REPORT_DESC_SIZE,/*wItemLength: Total length of Report descriptor*/
-  0x00,
-  /******************** Descriptor of Mouse endpoint ********************/
-  /* 27 */
-  0x07,          /*bLength: Endpoint Descriptor size*/
-  USB_DESC_TYPE_ENDPOINT, /*bDescriptorType:*/
-  
-  USBD_HID_IN_EP,     /*bEndpointAddress: Endpoint Address (IN)*/
-  0x03,          /*bmAttributes: Interrupt endpoint*/
-  HID_EPIN_SIZE, /*wMaxPacketSize: 4 Byte max */
-  0x00,
-  HID_FS_BINTERVAL,          /*bInterval: Polling Interval (10 ms)*/
-  /* 34 */
-} ;
 
 /* USB HID device Configuration Descriptor */
 __ALIGN_BEGIN static uint8_t USBD_HID_Desc[USB_HID_DESC_SIZ]  __ALIGN_END  =
 {
   /* 18 */
-  0x09,         /*bLength: HID Descriptor size*/
-  HID_DESCRIPTOR_TYPE, /*bDescriptorType: HID*/
-  0x11,         /*bcdHID: HID Class Spec release number*/
-  0x01,
-  0x00,         /*bCountryCode: Hardware target country*/
-  0x01,         /*bNumDescriptors: Number of HID class descriptors to follow*/
-  0x22,         /*bDescriptorType*/
-  HID_MOUSE_REPORT_DESC_SIZE,/*wItemLength: Total length of Report descriptor*/
-  0x00,
+	0x09,         /*bLength: HID Descriptor size*/
+	HID_DESCRIPTOR_TYPE, /*bDescriptorType: HID*/
+	0x11,         /*bcdHID: HID Class Spec release number*/
+	0x01,
+	0x00,         /*bCountryCode: Hardware target country*/
+	0x01,         /*bNumDescriptors: Number of HID class descriptors to follow*/
+	0x22,         /*bDescriptorType*/
+	LOBYTE(USBD_CUSTOM_HID_REPORT_DESC_SIZE), /*wItemLength: Total length of Report descriptor*/
+	HIBYTE(USBD_CUSTOM_HID_REPORT_DESC_SIZE)
 };
 
 /* USB Standard Device Descriptor */
@@ -192,54 +142,166 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
   0x00,
 };
 
-__ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __ALIGN_END =
+__ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
 {
-  0x05,   0x01,
-  0x09,   0x02,
-  0xA1,   0x01,
-  0x09,   0x01,
+		// Keyboard
+	    	0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+			0x09, 0x06,                    // USAGE (Keyboard)
+		    0xa1, 0x01,                    // COLLECTION (Application)
+		    0x85, 0x07,                    //   REPORT_ID (7)
+		    0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
+		    0x19, 0xe0,                    //   USAGE_MINIMUM (Keyboard LeftControl)
+		    0x29, 0xe7,                    //   USAGE_MAXIMUM (Keyboard Right GUI)
+		    0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+		    0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+		    0x75, 0x01,                    //   REPORT_SIZE (1)
+		    0x95, 0x08,                    //   REPORT_COUNT (8)
+		    0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+		    0x95, 0x01,                    //   REPORT_COUNT (1)
+		    0x75, 0x08,                    //   REPORT_SIZE (8)
+		    0x81, 0x03,                    //   INPUT (Cnst,Var,Abs)
+		    0x95, 0x06,                    //   REPORT_COUNT (6)
+		    0x75, 0x08,                    //   REPORT_SIZE (8)
+		    0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+		    0x25, 0xFF,                    //   LOGICAL_MAXIMUM (255)
+		    0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
+		    0x19, 0x00,                    //   USAGE_MINIMUM (Reserved (no event indicated))
+		    0x29, 0x65,                    //   USAGE_MAXIMUM (Keyboard Application)
+		    0x81, 0x00,                    //   INPUT (Data,Ary,Abs)
+			0xc0,                          // END_COLLECTION
+			// System Control
+//			0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+//		    0x09, 0x80,                    // USAGE (System Control)
+//		    0xa1, 0x01,                    // COLLECTION (Application)
+//		    0x85, 0x08,                    //   REPORT_ID (8)
+//		    0x19, 0x81,                    //   USAGE_MINIMUM (System Power Down)
+//		    0x29, 0x83,                    //   USAGE_MAXIMUM (System Wake Up)
+//		    0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+//		    0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+//		    0x95, 0x03,                    //   REPORT_COUNT (3)
+//		    0x75, 0x01,                    //   REPORT_SIZE (1)
+//		    0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+//		    0x95, 0x01,                    //   REPORT_COUNT (1)
+//		    0x75, 0x05,                    //   REPORT_SIZE (5)
+//		    0x81, 0x01,                    //   INPUT (Cnst,Ary,Abs)
+//			0xc0,                          //     END_COLLECTION
+			// Mouse
+			0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+			0x09, 0x02,                    // USAGE (Mouse)
+			0xa1, 0x01,                    // COLLECTION (Application)
+			0x85, 0x06,                    //   REPORT_ID (6)
+			0x09, 0x01,                    //   USAGE (Pointer)
+			0x05, 0x09,                    //     USAGE_PAGE (Button)
+			0x19, 0x01,                    //     USAGE_MINIMUM (Button 1)
+			0x29, 0x08,                    //     USAGE_MAXIMUM (Button 8)
+			0x15, 0x00,                    //     LOGICAL_MINIMUM (0)
+			0x25, 0x01,                    //     LOGICAL_MAXIMUM (1)
+			0x95, 0x08,                    //     REPORT_COUNT (8)
+			0x75, 0x01,                    //     REPORT_SIZE (1)
+			0x81, 0x02,                    //     INPUT (Data,Var,Abs)
+			0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
+			0x09, 0x30,                    //     USAGE (X)
+			0x09, 0x31,                    //     USAGE (Y)
+			0x09, 0x38,                    //     USAGE (Wheel)
+			0x15, 0x81,                    //     LOGICAL_MINIMUM (-127)
+			0x25, 0x7f,                    //     LOGICAL_MAXIMUM (127)
+			0x75, 0x08,                    //     REPORT_SIZE (8)
+			0x95, 0x03,                    //     REPORT_COUNT (3)
+			0x81, 0x06,                    //     INPUT (Data,Var,Rel)
+		    0xc0  ,                         // END_COLLECTION
+			// Gamepad
+			0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+			0x09, 0x05,                    // USAGE (Game Pad)
+			0xa1, 0x01,                    // COLLECTION (Application)
+			0x85, 0x01,                    //   REPORT_ID (1)
+			0x05, 0x09,                    //     USAGE_PAGE (Button)
+			0x15, 0x00,                    //     LOGICAL_MINIMUM (0)
+			0x25, 0x01,                    //     LOGICAL_MAXIMUM (1)
+			0x75, 0x01,                    //     REPORT_SIZE (1)
+			0x95, 0x40,                    //     REPORT_COUNT (64)
+			0x19, 0x01,                    //     USAGE_MINIMUM (Button 1)
+			0x29, 0x40,                    //     USAGE_MAXIMUM (Button 64)
+			0x81, 0x02,                    //     INPUT (Data,Var,Abs)
+			0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
+			0x09, 0x33,                    //     USAGE (Rx)
+			0x09, 0x34,                    //     USAGE (Ry)
+			0x09, 0x35,                    //     USAGE (Rz)
+			0x09, 0x36,                    //     USAGE (Slider1)
+			0x09, 0x36,                    //     USAGE (Slider2)
+			0x09, 0x32,                    //     USAGE (Z)
+			0x15, 0x00,                    //     LOGICAL_MINIMUM (0)
+			0x26, 0xff, 0x0f,              //     LOGICAL_MAXIMUM (4095)
+			0x75, 0x10,                    //     REPORT_SIZE (16)
+			0x95, 0x06,                    //     REPORT_COUNT (6)
+			0x81, 0x02,                    //     INPUT (Data,Var,Abs)
+			0x09, 0x39,                    //   USAGE (Hat switch)
+			0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+			0x25, 0x07,                    //   LOGICAL_MAXIMUM (7)
+			0x35, 0x00,                    //   PHYSICAL_MINIMUM (0)
+			0x46, 0x3b, 0x01,              //   PHYSICAL_MAXIMUM (315)
+			0x65, 0x12,                    //   UNIT (SI Rot:Angular Pos)
+			0x75, 0x08,                    //   REPORT_SIZE (8)
+			0x95, 0x01,                    //   REPORT_COUNT (1)
+			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+			0x09, 0x39,                    //   USAGE (Hat switch)
+			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+			0x09, 0x39,                    //   USAGE (Hat switch)
+			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+			0x09, 0x39,                    //   USAGE (Hat switch)
+			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+			// Custom Stuff
+			0x06, 0x00, 0xff,              //   USAGE_PAGE (Vendor Defined Page 1)
+			0x85, 0x02,                    //   REPORT_ID (2)
+			0x09, 0x01,                    //   USAGE (Vendor Usage 1)
+			0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+			0x26, 0xff, 0x00,              //   LOGICAL_MAXIMUM (255)
+			0x95, 0x3F,                     //   REPORT_COUNT (63)
+			0x75, 0x08,                    //   REPORT_SIZE (8)
+			0x91, 0x82,                    //   OUTPUT (Data,Var,Abs,Vol)
+			0x85, 0x05,                    //   REPORT_ID (5)
+			0x09, 0x04,                    //   USAGE (Vendor Usage 4)
+			0x81, 0x82,                    //   INPUT (Data,Var,Abs,Vol)
+			0x85, 0x04,                    //   REPORT_ID (4)
+			0x09, 0x03,                    //   USAGE (Vendor Usage 3)
+			0x81, 0x82,                    //   INPUT (Data,Var,Abs,Vol)
+			0x85, 0x03,                    //   REPORT_ID (3)
+			0x09, 0x02,                    //   USAGE (Vendor Usage 2)
+			0x95, 0x01,                    //   REPORT_COUNT (1)
+			0x75, 0x08,                    //   REPORT_SIZE (8)
+			0x91, 0x82,                    //   OUTPUT (Data,Var,Abs,Vol)
+			0xc0,                           // END_COLLECTION
+			// Additional Multimedia keys
+			0x05, 0x0c,                    // USAGE_PAGE (Consumer Devices)
+			0x09, 0x01,                    // USAGE (Consumer Control)
+			0xa1, 0x01,                    // COLLECTION (Application)
+			0x85, 0x09,                    //   REPORT_ID (9)
+			0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+			0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+			0x75, 0x01,                    //   REPORT_SIZE (1)
+//			0x95, 0x08,                    //   REPORT_COUNT (8)
+			0x95, 0x10, // REPORT_COUNT (16)
+			0x09, 0xb5,					   //   USAGE (Next Track)
+			0x09, 0xb6,					   //   USAGE (Previous Track)
+			0x09, 0xb7,					   //   USAGE (Stop)
+			0x09, 0xb8,					   //   USAGE (Eject)
+			0x09, 0xcd,                    //   USAGE (Play/Pause)
+			0x09, 0xe2,                    //   USAGE (Mute)
+			0x09, 0xea,                    //   USAGE (Volume Down)
+			0x09, 0xe9,                    //   USAGE (Volume Up)
+//			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+			0x0a, 0x92, 0x01,              //   USAGE (AL Calculator)
+			0x0a, 0x94, 0x01,              //   USAGE (AL Local Machine Browser)
+			0x0a, 0x9F, 0x01,              //   USAGE (AL Control Panel)
+			0x0a, 0xA1, 0x01,              //   USAGE (AL Task Manager)
+			0x0a, 0xC7, 0x01,              //   USAGE (AL Audio Player)
+			0x0a, 0x23, 0x02,              //   USAGE (AC Home)
+			0x0a, 0x24, 0x02,              //   USAGE (AC Back)
+			0x0a, 0x25, 0x02,              //   USAGE (AC Forward)
+//			0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+//			0x81, 0x62, // INPUT (Data,Var,Abs,NPrf,Null)
+			0x81, 0x06, // INPUT (Data,Var,Rel)
+			0xc0,                          //     END_COLLECTION
 
-  0xA1,   0x00,
-  0x05,   0x09,
-  0x19,   0x01,
-  0x29,   0x03,
-
-  0x15,   0x00,
-  0x25,   0x01,
-  0x95,   0x03,
-  0x75,   0x01,
-
-  0x81,   0x02,
-  0x95,   0x01,
-  0x75,   0x05,
-  0x81,   0x01,
-
-  0x05,   0x01,
-  0x09,   0x30,
-  0x09,   0x31,
-  0x09,   0x38,
-
-  0x15,   0x81,
-  0x25,   0x7F,
-  0x75,   0x08,
-  0x95,   0x03,
-
-  0x81,   0x06,
-  0xC0,   0x09,
-  0x3c,   0x05,
-  0xff,   0x09,
-
-  0x01,   0x15,
-  0x00,   0x25,
-  0x01,   0x75,
-  0x01,   0x95,
-
-  0x02,   0xb1,
-  0x22,   0x75,
-  0x06,   0x95,
-  0x01,   0xb1,
-
-  0x01,   0xc0
 };
 
 /**
@@ -264,9 +326,13 @@ uint8_t  USBD_HID_Init (USBD_HandleTypeDef *pdev,
 
   /* Open EP IN */
   USBD_LL_OpenEP(pdev,
-		  	     USBD_HID_IN_EP,
-                 USBD_EP_TYPE_INTR,
-                 HID_EPIN_SIZE);
+  		  	     USBD_HID_IN_EP,
+                   USBD_EP_TYPE_INTR,
+                   HID_EPIN_SIZE);
+  USBD_LL_OpenEP(pdev,
+  		  	     USBD_HID_OUT_EP,
+                   USBD_EP_TYPE_INTR,
+                   HID_EPIN_SIZE);
   
   if (pdev->pClassData == NULL) {
 	  pdev->pClassData = USBD_malloc(sizeof (USBD_CDC_HID_HandleTypeDef));
@@ -320,7 +386,6 @@ uint8_t  USBD_HID_Setup (USBD_HandleTypeDef *pdev,
   uint16_t len = 0;
   uint8_t  *pbuf = NULL;
   USBD_HID_HandleTypeDef     *hhid = &( ( (USBD_CDC_HID_HandleTypeDef*) pdev->pClassData)->hid);
-
   switch (req->bmRequest & USB_REQ_TYPE_MASK)
   {
   case USB_REQ_TYPE_CLASS :  
@@ -347,7 +412,7 @@ uint8_t  USBD_HID_Setup (USBD_HandleTypeDef *pdev,
                         (uint8_t *)&hhid->IdleState,
                         1);        
       break;      
-      
+
     default:
       USBD_CtlError (pdev, req);
       return USBD_FAIL; 
@@ -358,12 +423,12 @@ uint8_t  USBD_HID_Setup (USBD_HandleTypeDef *pdev,
     switch (req->bRequest)
     {
     case USB_REQ_GET_DESCRIPTOR: 
-      if( req->wValue >> 8 == HID_REPORT_DESC)
+      if( (req->wValue >> 8) == HID_REPORT_DESC)
       {
-        len = MIN(HID_MOUSE_REPORT_DESC_SIZE , req->wLength);
-        pbuf = HID_MOUSE_ReportDesc;
+        len = MIN(USBD_CUSTOM_HID_REPORT_DESC_SIZE , req->wLength);
+        pbuf = CUSTOM_HID_ReportDesc_FS;
       }
-      else if( req->wValue >> 8 == HID_DESCRIPTOR_TYPE)
+      else if( (req->wValue >> 8) == HID_DESCRIPTOR_TYPE)
       {
         pbuf = USBD_HID_Desc;
         len = MIN(USB_HID_DESC_SIZ , req->wLength);
@@ -444,19 +509,6 @@ uint32_t USBD_HID_GetPollingInterval (USBD_HandleTypeDef *pdev)
   return ((uint32_t)(polling_interval));
 }
 
-/**
-  * @brief  USBD_HID_GetCfgDesc
-  *         return configuration descriptor
-  * @param  speed : current device speed
-  * @param  length : pointer data length
-  * @retval pointer to descriptor buffer
-  */
-uint8_t  *USBD_HID_GetCfgDesc (uint16_t *length)
-{
-  *length = sizeof (USBD_HID_CfgDesc);
-  return USBD_HID_CfgDesc;
-}
-
 
 /**
   * @brief  USBD_HID_DataIn
@@ -471,7 +523,7 @@ uint8_t  USBD_HID_DataIn (USBD_HandleTypeDef *pdev,
   
   /* Ensure that the FIFO is empty before a new transfer, this condition could 
   be caused by  a new transfer before the end of the previous transfer */
-  ((USBD_CDC_HID_HandleTypeDef *)pdev->pClassData)->hid.state = 0;
+  ((USBD_CDC_HID_HandleTypeDef *)pdev->pClassData)->hid.state = HID_IDLE;
   return USBD_OK;
 }
 
@@ -486,6 +538,27 @@ uint8_t  *USBD_HID_GetDeviceQualifierDesc (uint16_t *length)
 {
   *length = sizeof (USBD_HID_DeviceQualifierDesc);
   return USBD_HID_DeviceQualifierDesc;
+}
+
+/**
+  * @brief  USBD_CUSTOM_HID_DataOut
+  *         handle data OUT Stage
+  * @param  pdev: device instance
+  * @param  epnum: endpoint index
+  * @retval status
+  */
+uint8_t  USBD_HID_DataOut (USBD_HandleTypeDef *pdev,
+                              uint8_t epnum)
+{
+
+	USBD_HID_HandleTypeDef     *hhid = &(((USBD_CDC_HID_HandleTypeDef*)pdev->pClassData)->hid);
+
+//  ((USBD_CUSTOM_HID_ItfTypeDef *)pdev->pUserData)->OutEvent(hhid->Report_buf[0],
+//                                                            hhid->Report_buf[1]);
+  static uint8_t reportBuf[64];
+  USBD_LL_PrepareReceive(pdev, USBD_HID_OUT_EP , reportBuf, 0x40);
+
+  return USBD_OK;
 }
 
 /**

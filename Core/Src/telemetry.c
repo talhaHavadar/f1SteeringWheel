@@ -21,10 +21,10 @@ void StartShowTelemetryDataTask(void const * argument) {
 	/* Infinite loop */
 	for(;;)
 	{
-		if (HandleSteeringDashData() == pdPASS) {
-			//HAL_UART_Transmit(&huart2, (uint8_t*) &steeringDashboard.rxBuffer[msg.index], msg.len, 100);
-			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-		}
+//		if (HandleSteeringDashData() == pdPASS) {
+//			//HAL_UART_Transmit(&huart2, (uint8_t*) &steeringDashboard.rxBuffer[msg.index], msg.len, 100);
+//			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+//		}
 		// CDC_Transmit_FS(msg, sizeof(msg));
 	}
 }

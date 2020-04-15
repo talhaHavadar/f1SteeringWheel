@@ -25,9 +25,9 @@
 #define USBD_CDC_OUT_EP			(USBD_CDC_EP_IDX)
 #define USBD_CDC_IN_EP			(USBD_CDC_EP_IDX | USBD_IN_EP_DIR)
 #define USBD_HID_IN_EP			(USBD_HID_EP_IDX | USBD_IN_EP_DIR)
+#define USBD_HID_OUT_EP			(USBD_HID_EP_IDX)
 
-#define USB_CDC_HID_CONFIG_DESC_SIZE		100
-
+#define USB_CDC_HID_CONFIG_DESC_SIZE		107
 typedef struct {
 	USBD_CDC_HandleTypeDef cdc;
 	USBD_HID_HandleTypeDef hid;

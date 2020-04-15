@@ -129,7 +129,7 @@ typedef struct {
 } out_fct_wrap_type;
 
 void _putchar(char character) {
-	// HAL_UART_Transmit(&huart2, (uint8_t *) &character, 1, 100);
+	HAL_UART_Transmit(&huart2, (uint8_t *) &character, 1, 100);
 	//CDC_Transmit_FS((uint8_t*) &character, 1);
 }
 
