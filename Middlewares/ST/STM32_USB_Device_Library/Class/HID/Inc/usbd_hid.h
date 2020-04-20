@@ -53,7 +53,7 @@
 
 #define USB_HID_CONFIG_DESC_SIZ       34
 #define USB_HID_DESC_SIZ              9
-#define USBD_CUSTOM_HID_REPORT_DESC_SIZE     272 //248 //244 //213 //240 //190 //144
+#define USBD_CUSTOM_HID_REPORT_DESC_SIZE     47 //248 //244 //213 //240 //190 //144
 
 #define HID_DESCRIPTOR_TYPE           0x21
 #define HID_REPORT_DESC               0x22

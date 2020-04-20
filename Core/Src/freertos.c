@@ -53,6 +53,8 @@
 #include "usb_device.h"
 #include "printf.h"
 #include "hid_reports.h"
+#include "button_interface.h"
+#include "usbd_hid.h"
 
 /* USER CODE BEGIN Includes */     
 
@@ -120,44 +122,20 @@ void MX_FREERTOS_Init(void) {
 /* StartHIDControllerTask function */
 void StartHIDControllerTask(void const * argument)
 {
+	const TickType_t taskFrequency = 10 * portTICK_PERIOD_MS;
 	/* init code for USB_DEVICE */
 	MX_USB_DEVICE_Init();
 	HIDGamepadReportTypeDef gamepad_report = emptyHIDGamepadReport;
-	// gamepad_report.buttons = 0x1;
+	TickType_t lastWakeTime = xTaskGetTickCount();
   /* Infinite loop */
   for(;;)
   {
-	  /*
-	  SetRpmPercentage(i);
-	  i++;
-	  if (i >= 100)
-	  {
-		  i = startVals[sVali++ % 5];
-	  }
-	  */
-//	  struct mouse_report_ {
-//	  	uint8_t packet_id;
-//	  	uint8_t left_button:1;
-//	  	uint8_t middle_button:1;
-//	  	uint8_t right_button:1;
-//	  	uint8_t additional_buttons:5;
-//	  	int8_t X_pos;
-//	  	int8_t Y_pos;
-//	  	int8_t mouse_wheel_pos;
-//	  };
-//	  volatile struct mouse_report_ mouse_report = {
-//	  		.packet_id = 6,
-//	  		.left_button = 0,
-//	  		.right_button = 0,
-//	  		.middle_button = 0,
-//	  		.additional_buttons = 0,
-//	  		.X_pos = 10,
-//	  		.Y_pos = 0,
-//	  		.mouse_wheel_pos = 0,
-//	  };
-//
-	  // USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*) &gamepad_report, sizeof(gamepad_report));
-	  osDelay(10);
+	  vTaskDelayUntil(&lastWakeTime, taskFrequency);
+
+	  gamepad_report = emptyHIDGamepadReport;
+	  ScanButtons(&gamepad_report.buttons);
+
+	  USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*) &gamepad_report, sizeof(gamepad_report));
   }
   /* USER CODE END StartHIDControllerTask */
 }

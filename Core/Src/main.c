@@ -55,6 +55,7 @@
 #include "gpio.h"
 #include "ws2812.h"
 #include "dashboard.h"
+#include "button_interface.h"
 
 
 /* USER CODE BEGIN Includes */
@@ -110,9 +111,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART2_UART_Init();
+  MX_USART_UART_Init();
 
   Ws2812Init();
+  InitializeButtonInterface();
 
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
